@@ -1,7 +1,7 @@
 node_modules/
 
 # Environment variables file
-#.env
+.env
 
 # Log file
 *.log
