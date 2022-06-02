@@ -1,6 +1,24 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pg from 'pg';
+import sql from 'mssql';
+
+const sqlConfig = {
+    server: process.env.SQL_USA_SERVER, // USA sql server address
+    authentication: {
+      type: 'default',
+      options: {  
+        userName: process.env.SQL_DATABASE_USER,
+        password: process.env.SQL_DATABASE_PASSWORD,
+      }
+    },
+    database: process.env.SQL_USA_DATABASE,
+    options: {
+        appname: process.env.SQL_DATABASE_APP_NAME,
+        trustServerCertificate: true,
+        encrypt: false,
+    }
+};
 
 // Object created in memory to set the Pool connection with PostgresSQL DB
 const config = {
@@ -13,6 +31,7 @@ const config = {
 };
 
 var pool = new pg.Pool(config);
+const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 // Function to verify if the user has logged in
 
@@ -60,58 +79,57 @@ export const register = (req, res) => {
 //                            the username
 //                            the user password
 
-export const login = (req, res) => {
+export const login = async(req, res) => {
 
-    var username = req.body.username;
-
-    findUserByUsername(username);
+    var email = req.body.email;
+    await findUserByEmail(email);
 
     // Internal function to search the user in the DB
 
-    function findUserByUsername(username) {
-        pool.connect(function (err, client, done) {
+    async function findUserByEmail(email) {
+        var connection = await sqlPool.connect();
+        connection.request().input('email', sql.VarChar(50), email).execute('prcFindUserByEmail', function(err, recordset) {
             if (err) {
                 console.log("Not able to stablish connection: " + err);
                 // Return the error with BAD REQUEST (400) status
                 res.status(400).send(err);
             }
-            client.query('SELECT * from prc_find_user_by_username($1)', [username], function (err, result) {
-                done();
-                if (err) {
-                    console.log(err);
-                    // Return the error with BAD REQUEST (400) status
-                    res.status(400).send(err);
-                }
-
-                if (result.rows.length == 0) {
+            try{
+                console.log(recordset);
+                var key = Object.keys(recordset.recordset[0])[0];
+    
+                if (recordset.recordset[0][key].length == 0) {
                     // Return the error with UNAUTHORIZED (401) status
                     res.status(401).json({ message: 'Authentication failed. No user found' });
                 } else {
-
-                    var user;
-                    user = result.rows[0];
+                    var user = JSON.parse(recordset.recordset[0][key])[0];
                     console.log(user);
-                    if (!comparePassword(req.body.password, user.hash)) {
+    
+                    if (!comparePassword(req.body.password, user.password)) {
                         // Return the error with UNAUTHORIZED (401) status
                         res.status(401).json({ message: 'Authentication failed. Wrong password' });
                     } else {
-
-
-                    const currentDate = new Date();
-                    currentDate.setHours( currentDate.getHours() + 7 );
-                        // Return the JWT token with OK (200) status
-                        return res.json({ token: jwt.sign({ username: user.username, 
-                                                            _id: user.id,
-                                                            exp: Math.floor(currentDate / 1000)}, process.env.SECRET_KEY) });
+                        // If everything is ok, create a token with the user id
+                        const currentDate = new Date();
+                        currentDate.setHours(currentDate.getHours() + 7 );
+                            // Return the JWT token with OK (200) status
+                            return res.json({ token: jwt.sign({ email: user.email, 
+                                                                _id: user.idUser,
+                                                                _idUserType: user.idUserType,
+                                                                _idLevel: user.idLevel,
+                                                                name: user.name,
+                                                                lastName: user.lastName,
+                                                                exp: Math.floor(currentDate / 1000)}, process.env.SECRET_KEY) });
                     }
-
                 }
-            });
+                
+            } catch(e){
+                console.log('Oops something happend: ', e);
+            }
         });
     }
 
     // Internal function to compare the provided hash password with the hash password from the DB
-
     function comparePassword(password, hashPassword) {
         return bcrypt.compareSync(password, hashPassword);
     }
