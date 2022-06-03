@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon ./index.js --exec babel-node -e js",
+    "start": "nodemon --exec npx babel-node ./index.js -e js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -27,6 +27,8 @@
     "pg": "^8.5.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/node": "^7.17.10",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1"
