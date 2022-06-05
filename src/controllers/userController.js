@@ -4,7 +4,7 @@ import pg from 'pg';
 import sql from 'mssql';
 
 const sqlConfig = {
-    server: process.env.SQL_USA_SERVER, // USA sql server address
+    server: process.env.SQL_SERVER,
     authentication: {
       type: 'default',
       options: {  
@@ -12,9 +12,8 @@ const sqlConfig = {
         password: process.env.SQL_DATABASE_PASSWORD,
       }
     },
-    database: process.env.SQL_USA_DATABASE,
+    database: process.env.SQL_DATABASE,
     options: {
-        appname: process.env.SQL_DATABASE_APP_NAME,
         trustServerCertificate: true,
         encrypt: false,
     }
@@ -88,14 +87,13 @@ export const login = async(req, res) => {
 
     async function findUserByEmail(email) {
         var connection = await sqlPool.connect();
-        connection.request().input('email', sql.VarChar(50), email).execute('prcFindUserByEmail', function(err, recordset) {
+        connection.request().input('emailParam', sql.VarChar(50), email).execute('prcFindUserByEmail', function(err, recordset) {
             if (err) {
                 console.log("Not able to stablish connection: " + err);
                 // Return the error with BAD REQUEST (400) status
                 res.status(400).send(err);
             }
             try{
-                console.log(recordset);
                 var key = Object.keys(recordset.recordset[0])[0];
     
                 if (recordset.recordset[0][key].length == 0) {
