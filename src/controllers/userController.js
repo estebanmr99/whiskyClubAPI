@@ -33,7 +33,6 @@ var pool = new pg.Pool(config);
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 // Function to verify if the user has logged in
-
 export const loginRequired = (req, res, next) => {
     if (req.user) {
         next();
@@ -44,32 +43,55 @@ export const loginRequired = (req, res, next) => {
 
 // Function to register a new user
 // Will recieve in the body:
-//                            the username
 //                            the email address
 //                            the user password
-
-export const register = (req, res) => {
+//                            the user location
+//                            the user name
+//                            the user phone number
+//                            the user last name
+export const register = async(req, res) => {
     // Preparing the pool connection to the DB
-    pool.connect(function (err, client, done) {
+    var connection = await sqlPool.connect();
+
+    // Encrypting the password
+    var hashPassword = bcrypt.hashSync(req.body.password, 10);
+
+    // Preparing the query to insert the new user
+    var request = new sql.Request(connection);
+    request.input('emailParam', sql.VarChar, req.body.email);
+    request.input('passwordParam', sql.VarChar, hashPassword);
+    request.input('locationLatParam', sql.Int, req.body.positionLat);
+    request.input('locationLngParam', sql.Int, req.body.positionLng);
+    request.input('nameParam', sql.VarChar, req.body.name);
+    request.input('lastnameParam', sql.VarChar, req.body.lastname);
+    request.input('telephoneParam', sql.VarChar, req.body.phone);
+    request.input('country', sql.VarChar, req.body.country);
+
+    // Executing the query
+    request.execute('prcRegisterUser', function(err, recordset) {
         if (err) {
             console.log("Not able to stablish connection: " + err);
             // Return the error with BAD REQUEST (400) status
             res.status(400).send(err);
         }
-        var hashPassword = bcrypt.hashSync(req.body.password, 10);
-        client.query('SELECT * from prc_register_user($1, $2, $3)', [req.body.username, req.body.email, hashPassword], function (err, result) {
-            done();
-            if (err) {
-                console.log(err);
-                // Return the error with BAD REQUEST (400) status
-                res.status(400).send({ message: err });
+
+        try{
+            var key = Object.keys(recordset.recordset[0])[0];
+
+            if (recordset.recordset[0][key].length == 0) {
+                // Return the error with UNAUTHORIZED (401) status
+                res.status(401).json({ message: 'Could not create user.' });
             } else {
-                var user = result.rows[0];
-                console.log(user);
+                var result = JSON.parse(recordset.recordset[0][key])[0];
+                console.log(result);
+
                 // Return the result from the DB with OK (200) status
-                return res.json(user);
+                return res.status(200).json(result);
             }
-        });
+            
+        } catch(e){
+            console.log('Oops something happend: ', e);
+        }
     });
 }
 
@@ -96,7 +118,7 @@ export const login = async(req, res) => {
             try{
                 var key = Object.keys(recordset.recordset[0])[0];
     
-                if (recordset.recordset[0][key].length == 0) {
+                if (JSON.parse(recordset.recordset[0][key]).length == 0) {
                     // Return the error with UNAUTHORIZED (401) status
                     res.status(401).json({ message: 'Authentication failed. No user found' });
                 } else {
@@ -111,7 +133,7 @@ export const login = async(req, res) => {
                         const currentDate = new Date();
                         currentDate.setHours(currentDate.getHours() + 7 );
                             // Return the JWT token with OK (200) status
-                            return res.json({ token: jwt.sign({ email: user.email, 
+                            return res.status(200).json({ token: jwt.sign({ email: user.email, 
                                                                 _id: user.idUser,
                                                                 _idUserType: user.idUserType,
                                                                 _idLevel: user.idLevel,
