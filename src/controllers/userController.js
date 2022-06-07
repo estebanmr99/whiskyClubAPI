@@ -58,13 +58,13 @@ export const register = async(req, res) => {
 
     // Preparing the query to insert the new user
     var request = new sql.Request(connection);
-    request.input('emailParam', sql.VarChar, req.body.email);
+    request.input('emailParam', sql.VarChar(50), req.body.email);
     request.input('passwordParam', sql.VarChar, hashPassword);
     request.input('locationLatParam', sql.Int, req.body.positionLat);
     request.input('locationLngParam', sql.Int, req.body.positionLng);
     request.input('nameParam', sql.VarChar, req.body.name);
-    request.input('lastnameParam', sql.VarChar, req.body.lastname);
-    request.input('telephoneParam', sql.VarChar, req.body.phone);
+    request.input('lastnameParam', sql.VarChar, req.body.lastName);
+    request.input('telephoneParam', sql.VarChar, req.body.telephone);
     request.input('country', sql.VarChar, req.body.country);
 
     // Executing the query
@@ -82,7 +82,7 @@ export const register = async(req, res) => {
                 // Return the error with UNAUTHORIZED (401) status
                 res.status(401).json({ message: 'Could not create user.' });
             } else {
-                var result = JSON.parse(recordset.recordset[0][key])[0];
+                var result = recordset.recordset[0][key];
                 console.log(result);
 
                 // Return the result from the DB with OK (200) status
