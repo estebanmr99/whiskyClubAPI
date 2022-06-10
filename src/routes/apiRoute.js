@@ -10,6 +10,8 @@ const route = (app) => {
 
     app.use('/sales', routes.sales);
 
+    app.use('/inventory', routes.inventory);
+    
     //Routes for basic requests
     
     app.get('/', (req, res) => {

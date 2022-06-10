@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import pg from 'pg';
 import sql from 'mssql';
 
+// Object created in memory to set the Pool connection with SQLSERVER DB
 const sqlConfig = {
     server: process.env.SQL_SERVER,
     authentication: {
@@ -19,17 +19,6 @@ const sqlConfig = {
     }
 };
 
-// Object created in memory to set the Pool connection with PostgresSQL DB
-const config = {
-    user: process.env.DATABASE_USER,
-    database: process.env.DATABASE,
-    password: process.env.DATABASE_PASSWORD,
-    port: process.env.DATABASE_PORT,
-    max: process.env.DATABASE_MAX_CONNECTIONS,
-    idleTimeoutMillis: process.env.DATABASE_TIME,
-};
-
-var pool = new pg.Pool(config);
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 // Function to verify if the user has logged in
