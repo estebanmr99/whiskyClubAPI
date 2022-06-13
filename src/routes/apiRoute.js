@@ -11,6 +11,8 @@ const route = (app) => {
     app.use('/sales', routes.sales);
 
     app.use('/inventory', routes.inventory);
+
+    app.use('/employee',routes.employee);
     
     //Routes for basic requests
     
