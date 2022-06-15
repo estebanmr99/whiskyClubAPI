@@ -10,6 +10,8 @@ router.get('/getProductsInfo', loginRequired, getProductsInfo);
 
 router.get('/getStoresInfo', loginRequired, getStoresInfo);
 
+router.get('/getTypesInfo', loginRequired, getStoresInfo);
+
 router.put('/updateStoreInventory', loginRequired, updateStoreInventory);
 
 export default router;
