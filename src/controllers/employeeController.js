@@ -19,7 +19,7 @@ const sqlConfig = {
 
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
-export const getStoreEmployees = async (req, res) => {
+export const getStoreEmployees = async (req, res) => { 
 
     let store = req.params.idStore;
     var connection = await sqlPool.connect();
@@ -36,18 +36,17 @@ export const getStoreEmployees = async (req, res) => {
       }
   
       try {
-        console.log(recordset); 
         var key = Object.keys(recordset.recordset[0])[0];
   
         if (recordset.recordset[0][key].length == 0) {
           // Return the error with UNAUTHORIZED (401) status
           res.status(401).json({ message: "Could not find employees." });
         } else {
-          var result = recordset.recordset[0][key];
+          var result = JSON.parse(recordset.recordset[0][key]);
           console.log(result);
   
           // Return the result from the DB with OK (200) status
-          return res.status(200).json(result);
+          return res.status(200).send(result);
         }
       } catch (e) {
         console.log("Oops something happend: ", e);

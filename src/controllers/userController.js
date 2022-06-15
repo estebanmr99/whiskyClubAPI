@@ -143,3 +143,44 @@ export const login = async(req, res) => {
         return bcrypt.compareSync(password, hashPassword);
     }
 }
+
+export const subscription = async (req, res) => {
+
+    var idUser = req.body.idUser;
+    var idLevel = req.body.idLevel;
+    var country = req.body.country;
+
+    var connection = await sqlPool.connect();
+    
+    var request = new sql.Request(connection);
+    request.input("idUser", sql.Int, idUser);
+    request.input("idLevel", sql.Int, idLevel);
+    request.input("country", sql.VarChar, country);
+  
+    // Executing the query
+    request.execute("prcSubscription", function (err, recordset) {
+      if (err) {
+        console.log("Not able to stablish connection: " + err);
+        // Return the error with BAD REQUEST (400) status
+        res.status(400).send(err);
+      }
+  
+      try {
+        console.log(recordset); 
+        var key = Object.keys(recordset.recordset[0])[0];
+  
+        if (recordset.recordset[0][key].length == 0) {
+          // Return the error with UNAUTHORIZED (401) status
+          res.status(401).json({ message: "Could not subscribe." });
+        } else {
+          var result = recordset.recordset[0][key];
+          console.log(result);
+  
+          // Return the result from the DB with OK (200) status
+          return res.status(200).json(result);
+        }
+      } catch (e) {
+        console.log("Oops something happend: ", e);
+      }
+    });
+  };
