@@ -43,11 +43,11 @@ export const getOrdersById = async (req, res) => {
           // Return the error with UNAUTHORIZED (401) status
           res.status(401).json({ message: "Could not find orders." });
         } else {
-          var result = recordset.recordset[0][key];
+          var result = JSON.parse(recordset.recordset[0][key]);
           console.log(result);
   
           // Return the result from the DB with OK (200) status
-          return res.status(200).json(result);
+          return res.status(200).send(result);
         }
       } catch (e) {
         console.log("Oops something happend: ", e);

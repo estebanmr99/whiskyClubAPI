@@ -12,7 +12,7 @@ const sqlConfig = {
   },
   database: process.env.SQL_DATABASE,
   options: {
-    trustServerCertificate: true,
+    trustServerCertificate: true, 
     encrypt: false,
   },
 };
@@ -59,12 +59,14 @@ export const getStoreEmployee = async (req, res) => {
 
     var store = req.body.idStore;
     var employee = req.body.idEmployee;
+    var country = req.body.country;
 
     var connection = await sqlPool.connect();
     
     var request = new sql.Request(connection);
     request.input("store", sql.Int, store);
     request.input("idEmployee", sql.Int, employee);
+    request.input("country", sql.VarChar, country);
   
     // Executing the query
     request.execute("prcFindEmploBySotre", function (err, recordset) {
@@ -82,11 +84,11 @@ export const getStoreEmployee = async (req, res) => {
           // Return the error with UNAUTHORIZED (401) status
           res.status(401).json({ message: "Could not find employees." });
         } else {
-          var result = recordset.recordset[0][key];
-          console.log(result);
+          var result = JSON.parse(recordset.recordset[0][key]); 
+          console.log(result[0].Ep[0].name); 
   
           // Return the result from the DB with OK (200) status
-          return res.status(200).json(result);
+          return res.status(200).send(result);
         }
       } catch (e) {
         console.log("Oops something happend: ", e);

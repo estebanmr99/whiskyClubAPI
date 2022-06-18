@@ -177,7 +177,7 @@ export const subscription = async (req, res) => {
           console.log(result);
   
           // Return the result from the DB with OK (200) status
-          return res.status(200).json(result);
+          return res.status(200).send(result); 
         }
       } catch (e) {
         console.log("Oops something happend: ", e);

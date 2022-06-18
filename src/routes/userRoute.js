@@ -10,6 +10,6 @@ router.post('/auth/register', register);
 router.post('/login', login);
 
 //Subscription route
-router.post('/subscription', subscription);
+router.post('/subscription', subscription); 
 
 export default router;
