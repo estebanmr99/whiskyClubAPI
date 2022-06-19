@@ -20,35 +20,6 @@ const sqlConfig = {
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 export const getAllStoresInventory = async (req, res) => {
-  // const tempStoresIneventoryArray = [
-  //   {
-  //     idProduct: 1,
-  //     currency: "USD",
-  //     globalPrice: 100,
-  //     localPrice: 10,
-  //     idStore: 1,
-  //     quantity: 10,
-  //   },
-  //   {
-  //     idProduct: 1,
-  //     currency: "USD",
-  //     globalPrice: 100,
-  //     localPrice: 10,
-  //     idStore: 3,
-  //     quantity: 4,
-  //   },
-  //   {
-  //     idProduct: 3,
-  //     currency: "EUR",
-  //     globalPrice: 100,
-  //     localPrice: 10,
-  //     idStore: 4,
-  //     quantity: 50,
-  //   },
-  // ];
-
-  // res.status(200).send(tempStoresIneventoryArray);
-
   // Internal function to search the user in the DB
   var connection = await sqlPool.connect();
   connection.request().execute("prcGetStoresInventory", function (err, recordset) {
@@ -111,45 +82,36 @@ export const getStoresInfo = async (req, res) => {
 };
 
 export const getProductsInfo = async (req, res) => {
-  var tempProductInfoArray = [
-    { idProduct: 1, name: "Whisky blah" },
-    { idProduct: 2, name: "Whisky blah 2" },
-    { idProduct: 3, name: "Whisky blah 3" },
-    { idProduct: 4, name: "Whisky blah 4" },
-  ];
-
-  res.status(200).send(tempProductInfoArray);
-
   // Internal function to search the user in the DB
-  // var connection = await sqlPool.connect();
-  // connection.request().execute("prcGetProductsInfo", function (err, recordset) {
-  //   if (err) {
-  //     console.log("Not able to stablish connection: " + err);
-  //     // Return the error with BAD REQUEST (400) status
-  //     res.status(400).send(err);
-  //   }
-  //   try {
-  //     if (!recordset.recordset) {
-  //       res.status(401).send({ message: "No records found." });
-  //       return;
-  //     }
+  var connection = await sqlPool.connect();
+  connection.request().execute("prcGetProductsInfo", function (err, recordset) {
+    if (err) {
+      console.log("Not able to stablish connection: " + err);
+      // Return the error with BAD REQUEST (400) status
+      res.status(400).send(err);
+    }
+    try {
+      if (!recordset.recordset) {
+        res.status(401).send({ message: "No records found." });
+        return;
+      }
 
-  //     var key = Object.keys(recordset.recordset[0])[0];
+      var key = Object.keys(recordset.recordset[0])[0];
 
-  //     if (JSON.parse(recordset.recordset[0][key]).length == 0) {
-  //       // Return the error with UNAUTHORIZED (401) status
-  //       res.status(401).json({ message: "No records found." });
-  //     } else {
-  //       var products = JSON.parse(recordset.recordset[0][key]);
-  //       console.log(products);
+      if (JSON.parse(recordset.recordset[0][key]).length == 0) {
+        // Return the error with UNAUTHORIZED (401) status
+        res.status(401).json({ message: "No records found." });
+      } else {
+        var products = JSON.parse(recordset.recordset[0][key]);
+        console.log(products);
 
-  //       // Return the JWT token with OK (200) status
-  //       return res.status(200).send(products);
-  //     }
-  //   } catch (e) {
-  //     console.log("Oops something happend: ", e);
-  //   }
-  // });
+        // Return the JWT token with OK (200) status
+        return res.status(200).send(products);
+      }
+    } catch (e) {
+      console.log("Oops something happend: ", e);
+    }
+  });
 };
 
 export const updateStoreInventory = async (req, res) => {

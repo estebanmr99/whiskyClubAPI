@@ -12,11 +12,13 @@ const route = (app) => {
 
     app.use('/inventory', routes.inventory);
 
-    app.use('/employee',routes.employee);
+    app.use('/employee', routes.employee);
 
     app.use('/orders',routes.orders);
 
     app.use('/createProducts',routes.createProducts);
+
+    app.use('/product', routes.product);
     
     //Routes for basic requests
     
