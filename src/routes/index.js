@@ -5,6 +5,7 @@ import sales from './salesRoute.js';
 import inventory from './inventoryRoute.js';
 import employee from './employeeRoute.js';
 import orders from './ordersRoute.js';
+import createProducts from './createProductRoute.js';
 
 
 // Index file as a middleware for route calls
@@ -15,5 +16,6 @@ export default {
   sales,
   inventory,
   employee,
-  orders
+  orders,
+  createProducts
 };

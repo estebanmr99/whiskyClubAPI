@@ -3,7 +3,7 @@ import { getStoreEmployees,getStoreEmployee,updateStoreEmployee,insertStoreEmplo
 
 const router = Router();
 
-router.get('/getStoreEmployees/:idStore', getStoreEmployees);
+router.post('/getStoreEmployees', getStoreEmployees);
 router.post('/getStoreEmployee', getStoreEmployee);
 router.put('/updateStoreEmployee', updateStoreEmployee);
 router.put('/insertStoreEmployee', insertStoreEmployee);

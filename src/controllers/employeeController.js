@@ -21,11 +21,13 @@ const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 export const getStoreEmployees = async (req, res) => { 
 
-    let store = req.params.idStore;
+    var store = req.body.idStore; 
+    var country = req.body.country;
     var connection = await sqlPool.connect();
     
     var request = new sql.Request(connection);
     request.input("store", sql.Int, store);
+    request.input("country", sql.VarChar, country);
   
     // Executing the query
     request.execute("prcFindEmployeesBySotre", function (err, recordset) {
@@ -60,7 +62,7 @@ export const getStoreEmployee = async (req, res) => {
     var store = req.body.idStore;
     var employee = req.body.idEmployee;
     var country = req.body.country;
-
+    console.log(req.body); 
     var connection = await sqlPool.connect();
     
     var request = new sql.Request(connection);
@@ -99,7 +101,7 @@ export const getStoreEmployee = async (req, res) => {
   export const updateStoreEmployee = async (req, res) => {
     // Preparing the pool connection to the DB
     var connection = await sqlPool.connect();
-  
+    console.log(req.body);
     // Preparing the query to insert the new user
     var request = new sql.Request(connection);
     request.input("store", sql.Int, req.body.store);
@@ -109,6 +111,7 @@ export const getStoreEmployee = async (req, res) => {
     request.input("birthDate", sql.VarChar, req.body.birthDate);
     request.input("localSalary", sql.Money, req.body.localSalary);
     request.input("globalSalary", sql.Money, req.body.globalSalary);
+    request.input("country", sql.VarChar, req.body.country);
   
     // Executing the query
     request.execute("prcUpdateEmploBySotre", function (err, recordset) {
@@ -119,8 +122,8 @@ export const getStoreEmployee = async (req, res) => {
       }
   
       try {
+        console.log(recordset); 
         var key = Object.keys(recordset.recordset[0])[0];
-  
         if (recordset.recordset[0][key].length == 0) {
           // Return the error with UNAUTHORIZED (401) status
           res.status(401).json({ message: "Could not update store employee." });
@@ -141,7 +144,7 @@ export const getStoreEmployee = async (req, res) => {
   export const insertStoreEmployee = async (req, res) => {
     // Preparing the pool connection to the DB
     var connection = await sqlPool.connect();
-  
+    console.log(req.body);
     // Preparing the query to insert the new user
     var request = new sql.Request(connection);
     request.input("store", sql.Int, req.body.store);
@@ -150,6 +153,7 @@ export const getStoreEmployee = async (req, res) => {
     request.input("birthDate", sql.Date, req.body.birthDate);
     request.input("localSalary", sql.Money, req.body.localSalary);
     request.input("globalSalary", sql.Money, req.body.globalSalary);
+    request.input("country", sql.VarChar, req.body.country);
   
     // Executing the query
     request.execute("prcInsertEmploBySotre", function (err, recordset) {
@@ -183,12 +187,14 @@ export const getStoreEmployee = async (req, res) => {
 
     var store = req.body.idStore;
     var employee = req.body.idEmployee;
+    var country = req.body.country;
 
     var connection = await sqlPool.connect();
     
     var request = new sql.Request(connection);
     request.input("store", sql.Int, store);
     request.input("idEmployee", sql.Int, employee);
+    request.input("country", sql.VarChar, country);
   
     // Executing the query
     request.execute("prcDeleteEmploBySotre", function (err, recordset) {
