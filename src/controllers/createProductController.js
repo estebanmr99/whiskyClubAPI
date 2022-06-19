@@ -29,7 +29,7 @@ export const insertProduct = async (req, res) => {
     request.input("typeParam", sql.Int, req.body.typeParam);
     request.input("agedParam", sql.VarChar, req.body.agedParam);
     request.input("presentationParam", sql.VarChar, req.body.presentationParam);
-    request.input("imageParam", sql.VarBinary, req.body.imageParam);
+    request.input("imageParam", sql.VarChar, req.body.imageParam);  
     request.input("globalPriceParam", sql.Money, req.body.globalPriceParam);
   
     // Executing the query
@@ -54,7 +54,7 @@ export const insertProduct = async (req, res) => {
           return res.status(200).send(result);
         }
       } catch (e) {
-        console.log("Oops something happend: ", e);
+        console.log("Oops something happend: ");
       }
     });
     
