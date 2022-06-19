@@ -4,12 +4,6 @@ const route = (app) => {
     //Route for requests related to user data
     app.use('/user', routes.user);
 
-    app.use('/furniture', routes.furniture);
-
-    app.use('/attributes', routes.attributes);
-
-    app.use('/sales', routes.sales);
-
     app.use('/inventory', routes.inventory);
 
     app.use('/employee', routes.employee);
