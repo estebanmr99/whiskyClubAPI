@@ -43,8 +43,13 @@ export const getAllProducts = async (req, res) => {
 
     try {
       var key = Object.keys(recordset.recordset[0])[0];
+      console.log(recordset);
 
-      if (recordset.recordset[0][key].length == 0) {
+      if (recordset.recordset[0][key] === null) {
+        // Return the error with UNAUTHORIZED (401) status
+        res.status(200).json([]);
+      
+      } else if (recordset.recordset[0][key].length == 0) {
         // Return the error with UNAUTHORIZED (401) status
         res.status(401).json({ message: "Could not retrieve products." });
       } else {
