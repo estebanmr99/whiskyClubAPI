@@ -4,7 +4,6 @@ import employee from './employeeRoute.js';
 import orders from './ordersRoute.js';
 import product from './productRoute.js';
 
-
 // Index file as a middleware for route calls
 export default {
   user,

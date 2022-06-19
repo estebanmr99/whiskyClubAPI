@@ -144,7 +144,7 @@ export const login = async(req, res) => {
     }
 }
 
-export const subscription = async (req, res) => {
+export const addSubscription = async (req, res) => {
 
     var idUser = req.body.idUser;
     var idLevel = req.body.idLevel;
