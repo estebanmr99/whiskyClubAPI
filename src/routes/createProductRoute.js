@@ -4,6 +4,7 @@ import { insertProduct,getTypes } from '../controllers/createProductController.j
 const router = Router();
 
 router.put('/insertProduct', insertProduct);
+
 router.post('/getTypes', getTypes);
 
 export default router;
