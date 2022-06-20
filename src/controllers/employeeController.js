@@ -19,9 +19,10 @@ const sqlConfig = {
 
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
-export const getStoreEmployees = async (req, res) => {
+export const getStoreEmployees = async (req, res) => { 
   var idStore = req.body.idStore;
   var country = req.body.country;
+  console.log(req.body);
   var connection = await sqlPool.connect();
 
   var request = new sql.Request(connection);
@@ -29,7 +30,7 @@ export const getStoreEmployees = async (req, res) => {
   request.input("country", sql.VarChar, country);
 
   // Executing the query
-  request.execute("prcFindEmployeesBySotre", function (err, recordset) {
+  request.execute("prcFindEmployeesByStore", function (err, recordset) {
     if (err) {
       console.log("Not able to stablish connection: " + err);
       // Return the error with BAD REQUEST (400) status
@@ -44,7 +45,7 @@ export const getStoreEmployees = async (req, res) => {
         res.status(401).json({ message: "Could not find employees." });
       } else {
         var result = JSON.parse(recordset.recordset[0][key]);
-        console.log(result);
+        console.log("RESULT",result);
 
         // Return the result from the DB with OK (200) status
         return res.status(200).send(result);
@@ -68,7 +69,7 @@ export const getStoreEmployee = async (req, res) => {
   request.input("country", sql.VarChar, country);
 
   // Executing the query
-  request.execute("prcFindEmploBySotre", function (err, recordset) {
+  request.execute("prcFindEmployeeByStore", function (err, recordset) {
     if (err) {
       console.log("Not able to stablish connection: " + err);
       // Return the error with BAD REQUEST (400) status
@@ -111,7 +112,7 @@ export const updateStoreEmployee = async (req, res) => {
   request.input("country", sql.VarChar, req.body.country);
 
   // Executing the query
-  request.execute("prcUpdateEmploBySotre", function (err, recordset) {
+  request.execute("prcUpdateEmployeeByStore", function (err, recordset) {
     if (err) {
       console.log("Not able to stablish connection: " + err);
       // Return the error with BAD REQUEST (400) status
@@ -152,7 +153,7 @@ export const insertStoreEmployee = async (req, res) => {
   request.input("country", sql.VarChar, req.body.country);
 
   // Executing the query
-  request.execute("prcInsertEmploBySotre", function (err, recordset) {
+  request.execute("prcInsertEmployeeByStore", function (err, recordset) {
     if (err) {
       console.log("Not able to stablish connection: " + err);
       // Return the error with BAD REQUEST (400) status
@@ -191,7 +192,7 @@ export const deleteStoreEmployee = async (req, res) => {
   request.input("country", sql.VarChar, country);
 
   // Executing the query
-  request.execute("prcDeleteEmploBySotre", function (err, recordset) {
+  request.execute("prcDeleteEmployeeByStore", function (err, recordset) {
     if (err) {
       console.log("Not able to stablish connection: " + err);
       // Return the error with BAD REQUEST (400) status
