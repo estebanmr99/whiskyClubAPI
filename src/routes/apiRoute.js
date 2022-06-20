@@ -1,5 +1,6 @@
 import routes from './index.js';
 
+// Here all the routes are processed
 const route = (app) => {
     //Route for requests related to user data
     app.use('/user', routes.user);
@@ -8,9 +9,9 @@ const route = (app) => {
 
     app.use('/employee', routes.employee);
 
-    app.use('/orders',routes.orders);
+    app.use('/orders', routes.orders);
 
-    app.use('/createProducts',routes.createProducts);
+    app.use('/createProducts', routes.createProducts);
 
     app.use('/product', routes.product);
     

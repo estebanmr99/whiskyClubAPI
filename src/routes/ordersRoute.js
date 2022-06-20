@@ -4,6 +4,7 @@ import { loginRequired } from '../controllers/userController.js';
 
 const router = Router();
 
+// Get the sales made by a user route
 router.get('/getOrdersById/:idUser', loginRequired, getOrdersById);
 
 export default router; 

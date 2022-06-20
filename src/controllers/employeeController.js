@@ -17,9 +17,15 @@ const sqlConfig = {
   },
 };
 
+// Load configuration for connection with the DB
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
-export const getStoreEmployees = async (req, res) => { 
+
+// Function to get all employees from a store from the DB
+// Will recieve in the body:
+//                            the store id
+//                            the country
+export const getStoreEmployees = async (req, res) => {
   var idStore = req.body.idStore;
   var country = req.body.country;
   console.log(req.body);
@@ -56,11 +62,15 @@ export const getStoreEmployees = async (req, res) => {
   });
 };
 
+// Function to get a employee from a store from the DB
+// Will recieve in the body:
+//                            the store id
+//                            the empleyee id
+//                            the country
 export const getStoreEmployee = async (req, res) => {
   var store = req.body.idStore;
   var employee = req.body.idEmployee;
   var country = req.body.country;
-  console.log(req.body);
   var connection = await sqlPool.connect();
 
   var request = new sql.Request(connection);
@@ -96,6 +106,16 @@ export const getStoreEmployee = async (req, res) => {
   });
 };
 
+// Function to update a employees in a store in the DB
+// Will recieve in the body:
+//                            the store id
+//                            the employee id
+//                            the employee name
+//                            the employee last name
+//                            the employee birth date
+//                            the employee local salary
+//                            the employee global salary
+//                            the country
 export const updateStoreEmployee = async (req, res) => {
   // Preparing the pool connection to the DB
   var connection = await sqlPool.connect();
@@ -138,6 +158,15 @@ export const updateStoreEmployee = async (req, res) => {
   });
 };
 
+// Function to create a employee in a store in the DB
+// Will recieve in the body:
+//                            the store id
+//                            the employee id
+//                            the employee name
+//                            the employee last name
+//                            the employee birth date
+//                            the employee local salary
+//                            the employee global salary
 export const insertStoreEmployee = async (req, res) => {
   // Preparing the pool connection to the DB
   var connection = await sqlPool.connect();
@@ -179,6 +208,10 @@ export const insertStoreEmployee = async (req, res) => {
   });
 };
 
+// Function to delete a employee in a store from the DB
+// Will recieve in the body:
+//                            the store id
+//                            the employee id
 export const deleteStoreEmployee = async (req, res) => {
   var store = req.body.idStore;
   var employee = req.body.idEmployee;

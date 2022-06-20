@@ -19,6 +19,7 @@ const sqlConfig = {
     }
 };
 
+// Load configuration for connection with the DB
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
 // Function to verify if the user has logged in
@@ -95,7 +96,6 @@ export const login = async(req, res) => {
     await findUserByEmail(email);
 
     // Internal function to search the user in the DB
-
     async function findUserByEmail(email) {
         var connection = await sqlPool.connect();
         connection.request().input('emailParam', sql.VarChar(50), email).execute('prcFindUserByEmail', function(err, recordset) {
@@ -144,8 +144,13 @@ export const login = async(req, res) => {
     }
 }
 
+// Function to add a suscription to a user
+// Will recieve in the body:
+//                            the user id
+//                            the user level
+//                            the user country
 export const addSubscription = async (req, res) => {
-
+    // Get body content
     var idUser = req.body.idUser;
     var idLevel = req.body.idLevel;
     var country = req.body.country;
