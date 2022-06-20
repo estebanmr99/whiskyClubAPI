@@ -17,8 +17,10 @@ const sqlConfig = {
   },
 };
 
+// Load configuration for connection with the DB
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
+// Function to get all stores inventory from the DB
 export const getAllStoresInventory = async (req, res) => {
   // Internal function to search the user in the DB
   var connection = await sqlPool.connect();
@@ -52,6 +54,7 @@ export const getAllStoresInventory = async (req, res) => {
   });
 };
 
+// Function to get all stores info from the DB
 export const getStoresInfo = async (req, res) => {
   // Internal function to search the user in the DB
   var connection = await sqlPool.connect();
@@ -81,6 +84,7 @@ export const getStoresInfo = async (req, res) => {
   });
 };
 
+// Function to get all products info from the DB
 export const getProductsInfo = async (req, res) => {
   // Internal function to search the user in the DB
   var connection = await sqlPool.connect();
@@ -114,6 +118,9 @@ export const getProductsInfo = async (req, res) => {
   });
 };
 
+// Function to update a product in a store from the DB
+// Will recieve in the body:
+//                            the store id, the product id and the new quantity, and the new prices
 export const updateStoreInventory = async (req, res) => {
   // Preparing the pool connection to the DB
   var connection = await sqlPool.connect();

@@ -17,10 +17,11 @@ const sqlConfig = {
   },
 };
 
+// Load configuration for connection with the DB
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
+// Function to get all sales made for a user from the DB
 export const getOrdersById = async (req, res) => {
-
     let user = req.params.idUser;
     var connection = await sqlPool.connect();
     

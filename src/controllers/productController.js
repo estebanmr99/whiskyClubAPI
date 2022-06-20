@@ -17,8 +17,18 @@ const sqlConfig = {
   },
 };
 
+// Load configuration for connection with the DB
 const sqlPool = new sql.ConnectionPool(sqlConfig);
 
+// Function to get all products from the DB
+// Will recieve in the body:
+//                            the search term to search for
+//                            the user id to search for
+//                            the product type to search for
+//                            the distance to search for
+//                            the price to search for
+//                            the order by to search for
+//                            the country to search for
 export const getAllProducts = async (req, res) => {
   // Preparing the pool connection to the DB
   var connection = await sqlPool.connect();
@@ -55,6 +65,7 @@ export const getAllProducts = async (req, res) => {
       } else {
         var result = JSON.parse(recordset.recordset[0][key]);
 
+        // Convert the result to JSON and return it with OK (200) status
         result.forEach((product, index) => {
             if (result[index].features){
                 result[index].features = JSON.parse(product.features);
@@ -74,7 +85,7 @@ export const getAllProducts = async (req, res) => {
   });
 };
 
-
+// Function to get all the product types from the DB
 export const getProductTypes = async (req, res) => {
     // Internal function to search the user in the DB
     var connection = await sqlPool.connect();
